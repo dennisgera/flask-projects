@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+
 from helper import (
     recipes,
     descriptions,
@@ -6,9 +9,16 @@ from helper import (
     instructions,
     add_ingredients,
     add_instructions,
+    comments,
 )
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "mysecret"
+
+
+class CommentForm(FlaskForm):
+    comment = StringField("Comment")
+    submit = SubmitField("Submit")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -24,12 +34,21 @@ def index():
     return render_template("index.html", template_recipes=recipes)
 
 
-@app.route("/recipe/<int:id>")
-def recipe(id: int):
+@app.route("/recipe/<int:id>", methods=["GET", "POST"])
+def recipe(id):
+    #### Instantiate form class here
+    comment_form = CommentForm()
     return render_template(
-        "recipes.html",
+        "recipe.html",
         template_recipe=recipes[id],
         template_description=descriptions[id],
         template_ingredients=ingredients[id],
         template_instructions=instructions[id],
+        template_comments=comments[id],
+        template_form=comment_form,
     )
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
