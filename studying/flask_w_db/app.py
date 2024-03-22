@@ -52,3 +52,4 @@ class Annotation(db.Model):
     #get a nice printout for Annotation objects
     def __repr__(self):
         return '<Annotation {}-{}:{} >'.format(self.reviewer_id, self.book_id, self.text)
+
